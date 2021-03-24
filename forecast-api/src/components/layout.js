@@ -6,11 +6,28 @@ export default function Layout() {
   const [latitude, setLatitude] = useState("");
   const [forecast, setForecast] = useState("");
   const [display, setDisplay] = useState(false);
-  let handleSubmit = async (e) => {
+  const [status, setStatus] = useState("");
+  const getForecast = async (nextDay) => {
+    try {
+      const response = await axios.get(
+        `https://api.weather.gov/points/${latitude},${longitude}`
+      );
+      const url = response?.data.properties.forecast;
+      const forecast = await axios.get(`${url}`);
+      let tomorrowData = forecast?.data.properties.periods.filter((value) =>
+        value.name.includes(nextDay)
+      );
+      setForecast(tomorrowData);
+      setStatus("Success");
+      setDisplay(true);
+    } catch {
+      setStatus("Error");
+      setDisplay(false);
+    }
+  };
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await axios.get(
-      `https://api.weather.gov/points/${latitude},${longitude}`
-    );
+    setDisplay(false);
     const days = [
       "Sunday",
       "Monday",
@@ -25,13 +42,7 @@ export default function Layout() {
     today.setDate(today.getDate() + 1);
     const tomorrow = new Date(today);
     const nextDay = days[tomorrow.getDay()];
-    const url = response.data.properties.forecast;
-    const forecast = await axios.get(`${url}`);
-    let tomorrowData = forecast.data.properties.periods.filter((value) =>
-      value.name.includes(nextDay)
-    );
-    setForecast(tomorrowData);
-    setDisplay(true);
+    getForecast(nextDay);
   };
   return (
     <div className="div-content">
@@ -61,6 +72,11 @@ export default function Layout() {
           />
         </div>
         <hr />
+        {status === "Error" ? (
+          <div>
+            <p>Unable to get the data for given information.</p>
+          </div>
+        ) : null}
         <button
           type="submit"
           value="submit"
@@ -75,7 +91,10 @@ export default function Layout() {
         <div class="card-group">
           {display ? (
             forecast.map((value) => (
-              <div class="card bg-light mb-3" style={{ margin: "5px", marginTop: "55px"}}>
+              <div
+                class="card bg-light mb-3"
+                style={{ margin: "5px", marginTop: "55px" }}
+              >
                 <div class="card-header">{value.name}</div>
 
                 <div className="card-body">
