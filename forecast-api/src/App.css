@@ -1,0 +1,28 @@
+.div-content {
+  width: 50%;
+  height: 400px;
+  background-color: #fff;
+  position: sticky;
+  margin-top: 10%;
+  margin-left: 30%;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: auto;
+  padding: 1em 2em;
+  display: table;
+}
+
+.form {
+  width: 500px;
+  padding: 15px;
+  border-radius: 1px;
+  box-shadow: 0px 0px 0px 2px rgba(0,0,0,0.3);}
+
+.list-results {
+  list-style-type: none;
+  padding: 10px;
+}
+
+.card-group { 
+  z-index: -1;
+}
